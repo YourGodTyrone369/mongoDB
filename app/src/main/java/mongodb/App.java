@@ -20,22 +20,37 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         Scanner keyboard = new Scanner(System.in);
-        System.out.println("What is the name of this product?");
-        String name = keyboard.nextLine();
-        System.out.println("What is the price of this product?");
-        String price = keyboard.nextLine();
-        System.out.println("Describe this product.");
-        String description = keyboard.nextLine();
-        System.out.println("What product would you like to view?");
-        String search = keyboard.nextLine();
-        System.out.println("What product would you like to update?");
-        String update = keyboard.nextLine();
+        
+        
+        
 
         // Replace the uri string with your MongoDB deployment's connection string
         String uri = "mongodb+srv://Silly:Whacky@cluster0.6vjwb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("Product");
             MongoCollection<Document> collection = database.getCollection("Test");
+
+            System.out.println("What product would you like to view?");
+            String search = keyboard.nextLine();
+            if (!(search.equals("none"))) {
+                // Creates instructions to project two document fields
+                Bson projectionFields = Projections.fields(
+                        Projections.include("name", "price", "description"),
+                        Projections.excludeId());
+                // Retrieves the first matching document, applying a projection and a descending sort to the results
+                Document doc = collection.find(eq("name", search))
+                        .projection(projectionFields)
+                        .first();
+
+                System.out.println(doc);
+            }
+
+            System.out.println("What is the name of this product?");
+            String name = keyboard.nextLine();
+            System.out.println("What is the price of this product?");
+            String price = keyboard.nextLine();
+            System.out.println("Describe this product.");
+            String description = keyboard.nextLine();
             if (!(name.equals("none"))) {
                 try {
                 // Inserts a sample document describing a movie into the collection
@@ -50,18 +65,11 @@ public class App {
                 } catch (MongoException me) {
                 System.err.println("Unable to insert due to an error: " + me);
             }}
-            if (!(search.equals("none"))) {
-                // Creates instructions to project two document fields
-                Bson projectionFields = Projections.fields(
-                        Projections.include("name", "price", "description"),
-                        Projections.excludeId());
-                // Retrieves the first matching document, applying a projection and a descending sort to the results
-                Document doc = collection.find(eq("name", search))
-                        .projection(projectionFields)
-                        .first();
 
-                System.out.println(doc);
-            }
+            
+
+            System.out.println("What product would you like to update?");
+            String update = keyboard.nextLine();
             if (!(update.equals("none"))) {
                 Document query = new Document().append("title",  "Cool Runnings 2");
                 // Creates instructions to update the values of three document fields
