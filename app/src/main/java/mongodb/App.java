@@ -71,12 +71,15 @@ public class App {
             System.out.println("What product would you like to update?");
             String update = keyboard.nextLine();
             if (!(update.equals("none"))) {
-                Document query = new Document().append("title",  "Cool Runnings 2");
+                Document query = new Document().append("name",  update);
                 // Creates instructions to update the values of three document fields
+                System.out.println("What is the new price of this product?");
+                price = keyboard.nextLine();
+                System.out.println("New description of this product.");
+                description = keyboard.nextLine();
                 Bson updates = Updates.combine(
-                        Updates.set("runtime", 99),
-                        Updates.addToSet("genres", "Sports"),
-                        Updates.currentTimestamp("lastUpdated"));
+                        Updates.set("price", price),
+                        Updates.set("description", description));
                 // Instructs the driver to insert a new document if none match the query
                 UpdateOptions options = new UpdateOptions().upsert(true);
                 try {
