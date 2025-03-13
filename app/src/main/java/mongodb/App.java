@@ -16,6 +16,7 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import java.util.Scanner;
+import com.mongodb.client.result.DeleteResult;
 
 public class App {
     public static void main(String[] args) {
@@ -92,6 +93,20 @@ public class App {
                 // Prints a message if any exceptions occur during the operation
                 } catch (MongoException me) {
                     System.err.println("Unable to update due to an error: " + me);
+                }
+            }
+
+            System.out.println("What product would you like to delete?");
+            String delete = keyboard.nextLine();
+            if (!(delete.equals("none"))) {
+                Bson query = eq("name", delete);
+                try {
+                    // Deletes the first document that has a "title" value of "The Garbage Pail Kids Movie"
+                    DeleteResult result = collection.deleteOne(query);
+                    System.out.println("Deleted document count: " + result.getDeletedCount());
+                // Prints a message if any exceptions occur during the operation
+                } catch (MongoException me) {
+                    System.err.println("Unable to delete due to an error: " + me);
                 }
             }
         }
